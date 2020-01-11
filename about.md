@@ -1,6 +1,7 @@
 ---
-layout: default
+layout: post
 titel: about | Rouben Rehman
+cover: transparent
 ---
 
 ## About | Rouben Rehman
