@@ -1,7 +1,7 @@
 ---
 layout: post
-titel: about | Rouben Rehman
-cover: transparent
+titel: about
+cover: transparent.png
 ---
 
 ## About | Rouben Rehman
