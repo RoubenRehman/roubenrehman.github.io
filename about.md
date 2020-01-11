@@ -1,6 +1,6 @@
 ---
 layout: post
-titel: about
+title: about
 cover: transparent.png
 ---
 
