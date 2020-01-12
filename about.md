@@ -1,7 +1,7 @@
 ---
 layout: post
 title: about
-cover: prog1.jpg
+cover: prog1.png
 ---
 
 ## WhoAmI?
