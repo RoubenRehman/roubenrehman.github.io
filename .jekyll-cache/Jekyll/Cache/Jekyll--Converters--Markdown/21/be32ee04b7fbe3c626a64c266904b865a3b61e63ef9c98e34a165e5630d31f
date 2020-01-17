@@ -1,0 +1,111 @@
+I"�<<h2 id="introduction">Introduction</h2>
+
+<p>This project is a very simple take on Machine Learning. If you’re a beginner on the topic and you want to code something that works in 30 minutes, this is for you. I wrote this script a few months ago just to get myself into the world of Machine Learning. The goal was to create a program that can recognize hand written digits after being trained on a sample set. I’m using scikit-image’s imsave function and the codec module to handle the input images, the Neural Net itself is written in pure Numpy. You can find the repository <a href="https://github.com/RoubenRehman/HandWrittenDigitsNeuralNet">here</a>.</p>
+
+<h2 id="the-mnist-database">The MNIST Database</h2>
+
+<p>The dataset used in this project is the <em>MNIST Database of handwritten digits</em> by Yann LeCun, Corinna Cortes and Christopher J.C Burges. It consists of 70.000 28x28 pixel large greyscale images, 60.000 of which are intended for training purposes. The remaining 10.000 are used to test the code.</p>
+
+<p>The database comes in a non-standardized, yet very simple format called IDX. In essence, the file starts with a magic number, followed by the definition of all necessary dimensions. This would be number of images, width and height for an image database and number of labels for a label database. All these values are 32bit integers. What follows is the raw data (pixel value or label), each value is of type unsigned int. To read the databases and output the images as png if desired, I used <a href="https://www.youtube.com/watch?v=6xar6bxD80g">Gosh4AI’s code</a>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">datapath</span> <span class="o">=</span> <span class="s">'./resources/'</span>
+<span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">datapath</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+This opens up the resources folder containing all the MNIST databases. Now we are for-looping for each file in files, to consecutively read all four databases. For each file, we are first checking the magic number. If it’s 2051, the database contains image data so we read and resize the pixel values as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">2051</span><span class="p">:</span>    <span class="c1"># magic number indicates images
+</span>    <span class="n">category</span> <span class="o">=</span> <span class="s">'images'</span>
+    <span class="n">num_rows</span> <span class="o">=</span> <span class="n">get_int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>  <span class="c1"># getting height of image in pixels
+</span>    <span class="n">num_cols</span> <span class="o">=</span> <span class="n">get_int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">])</span> <span class="c1"># getting width of image in pixels
+</span>    <span class="n">parsed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span> <span class="c1"># reading all following data
+</span>    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">num_rows</span><span class="p">,</span> <span class="n">num_cols</span><span class="p">)</span> <span class="c1"># resizing the data accordingly
+</span></code></pre></div></div>
+<p><br />
+If the magic number is equal to 2049, we are reading a label database:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">2049</span><span class="p">:</span>  <span class="c1"># magic number indicates labels
+</span>    <span class="n">category</span> <span class="o">=</span> <span class="s">'labels'</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+Now we check the length of the database to determine whether it’s a training set or a test set and afterwards save the np-array in a dictionary:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">10000</span><span class="p">:</span>     <span class="c1"># testing set
+</span>    <span class="nb">set</span> <span class="o">=</span> <span class="s">'test'</span>
+
+<span class="k">elif</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">60000</span><span class="p">:</span>   <span class="c1"># training set
+</span>    <span class="nb">set</span> <span class="o">=</span> <span class="s">'train'</span>
+
+<span class="n">data_dict</span><span class="p">[</span><span class="nb">set</span><span class="o">+</span><span class="s">'_'</span><span class="o">+</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed</span>
+</code></pre></div></div>
+<p><br />
+Further information and all databases can be found on <a href="http://yann.lecun.com/exdb/mnist/">LeCun’s website</a>. The databases are also included in this project’s repository.</p>
+
+<h2 id="the-math">The Math</h2>
+
+<p>The algorithm I used here is pretty simple and easy to understand. I didn’t use fancy techniques like convolution and didn’t preprocess the images in any way. The Net has one input-layer with 784 neurons, each corresponding to one pixel of the image. Inside, there are two hidden layers with 16 neurons each and the output layer has 10 neurons. The idea is, that the index of the highest value in the output layer is the net’s guess and the actual value is the percentage of it’s certainty. So if the output layer would be</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>o = [0, 0.003, 0.01, 0, 1.22, 1.02, 0, 97.2, 0.02, 0.527]
+</code></pre></div></div>
+<p><br />
+then the Net’s guess would be 7 with a certainty of 97.2 percent.</p>
+
+<p>I used the classic sigmoid function as activation function just because it’s the easiest to deal with. I didn’t use any biases. The sigmoid function and it’s derivative are defined within the code as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Activation function
+</span><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># Activation function derivative
+</span><span class="k">def</span> <span class="nf">sigmoid_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+To actually train the Net, we iterate over every image saved in the dictionary that is labeled “train”. First, the input has to be fed forward through the Net:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60000</span><span class="p">):</span>
+    <span class="c1"># feed forward
+</span>    <span class="n">l0</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">'train_images'</span><span class="p">][</span><span class="n">it</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">))</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l0</span><span class="p">,</span> <span class="n">syn0</span><span class="p">))</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">syn1</span><span class="p">))</span>
+    <span class="n">l3</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l2</span><span class="p">,</span> <span class="n">syn2</span><span class="p">))</span>
+</code></pre></div></div>
+<p><br />
+Then back propagation starts and we calculate the overall error and each layer’s delta:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># back propagation
+</span>    <span class="n">expt_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">expt_out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">data_dict</span><span class="p">[</span><span class="s">'train_labels'</span><span class="p">][</span><span class="n">it</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">l3_err</span> <span class="o">=</span> <span class="n">expt_out</span> <span class="o">-</span> <span class="n">l3</span>
+
+    <span class="c1"># calculating deltas
+</span>    <span class="n">l3_delta</span> <span class="o">=</span> <span class="n">l3_err</span><span class="o">*</span><span class="n">sigmoid_derivative</span><span class="p">(</span><span class="n">l3</span><span class="p">)</span>
+
+    <span class="n">l2_err</span> <span class="o">=</span> <span class="n">l3_delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">syn2</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">l2_delta</span> <span class="o">=</span> <span class="n">l2_err</span><span class="o">*</span><span class="n">sigmoid_derivative</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span>
+
+    <span class="n">l1_err</span> <span class="o">=</span> <span class="n">l2_delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">syn1</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">l1_delta</span> <span class="o">=</span> <span class="n">l1_err</span><span class="o">*</span><span class="n">sigmoid_derivative</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+After that, we just have to update all connections as follows:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># updating
+</span>    <span class="n">syn2</span> <span class="o">+=</span> <span class="n">l2</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l3_delta</span><span class="p">)</span>
+    <span class="n">syn1</span> <span class="o">+=</span> <span class="n">l1</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l2_delta</span><span class="p">)</span>
+    <span class="n">syn0</span> <span class="o">+=</span> <span class="n">l0</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1_delta</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+What we’re trying to do here is formulating a measure on “how wrong” the Net’s guess is, the so-called <em>cost function</em>, and then minimizing that function through gradient descent. In this example, the cost function is just the Net’s raw error:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">l3_err</span> <span class="o">=</span> <span class="n">expt_out</span> <span class="o">-</span> <span class="n">l3</span>
+</code></pre></div></div>
+<p><br />
+By changing the Net’s connection values in such a way, that we minimize this function, we in turn “train” the Net to recognize the digits correctly.
+To fully understand this algorithm, I’d recommend <a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3blue1brown’s video series</a> on Neural Nets. <a href="https://towardsdatascience.com/">Towards Datascience</a> also has a lot of good explanations on algorithms, terminology and more.</p>
+
+<p>##summing up</p>
+
+<p>There’s not much to say really, feel free to mess around with the code however you want, especially if you’re a beginner. Try to change up the architecture of the Net or plug in a different activation function. There’s a lot of documentary and tutorials out there so you should have no problem to get yourself kick-started in the world of Machine Learning.</p>
+:ET
