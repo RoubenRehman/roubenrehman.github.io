@@ -36,7 +36,7 @@ To make this process less daunting, at least until the oficial method of sharing
 
 The Level Manager consists of a Python script and two UI files for the graphical user interface for which it utilizes the [PyQt5](https://pypi.org/project/PyQt5/) library. On first startup, you will be asked to set the path to your `steamapps/` folder. Baba Is You should be installed under `steamapps/common/Baba Is You`. The path will be saved in a .txt file in your user directory for future use.
 
-The program than scans your `data/Worlds/levels/` folder and fetches the levels' titels from the `.ld` files. The levels get displayed in the ListView on the right site of the program.
+The program then scans your `data/Worlds/levels/` folder and fetches the levels' titels from the `.ld` files. The levels get displayed in the ListView on the right site of the program.
 
 ![title](/images/Screenshot_levelmanag.png)
 
