@@ -2,9 +2,6 @@
 layout: about
 cover: prog1.png
 ---
-
-# Impressum
-
 ## Angaben gemäß § 5 TMG
 ## Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
 
