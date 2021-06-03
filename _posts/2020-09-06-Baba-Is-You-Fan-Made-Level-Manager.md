@@ -13,7 +13,7 @@ categories: posts
 
 [Baba Is You](http://www.hempuli.com/baba/) is an award-winning puzzle game developed by [Arvi Teikari](http://www.hempuli.com/). The basic idea is the same as in every puzzle game, you have a certain objective, say a flag, and have to solve puzzles to get there. The catch: The game's rules are itself objects within the levels and can be altered. A wall blocks your way? Destroy the `Wall Is Stop` rule and just move *through* the wall! You have to move a rock, but can't? Just write `Rock Is Push` and try again! You get the idea.
 
-{% include youtubePlayer.html id="Ca5BYKRVXHM" %}
+[Baba is You - Trailer on YouTube](https://youtu.be/Ca5BYKRVXHM)
 
 \\
 The game's campaing offers a lot of content and I found myself playing for hours on end more than once, the head-cramping getting worse with each level. It's great fun for sure, but what is even more fun is not only to play, but *design* levels. This is what I no doubt love the most about this game; spending days designing a good level, trying to figure out new mechanics and how to decieve the player in the meanest ways possible. Then, when I'm done, sharing the level with my friends and watch them while their brains are slowly melting away. This quickly grew into a somewhat regular thing with me and some friends now meeting ever-so-often, dumping all of our levels on one machine and have each others play them.
