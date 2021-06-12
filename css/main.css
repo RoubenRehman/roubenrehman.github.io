@@ -1,5 +1,31 @@
 /*****************************************************************************/
 /*
+/* Webkit
+/*
+/*****************************************************************************/
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #eaeaea;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/*****************************************************************************/
+/*
 /* Common
 /*
 /*****************************************************************************/
@@ -115,12 +141,11 @@ a:hover {
 
 .footer {
   font-size: 0.95em;
-  padding-top: 115%;
+  padding-top: 1.5em;
   padding-bottom: 1.5em;
-  padding-left: 4%;
   overflow: hidden;
-  float: center;
-  text-align: center;
+  float: left;
+  text-align: left;
 }
 
 .footer a {
@@ -191,7 +216,7 @@ a:hover {
 /* standard */
 .post pre {
   border: 1px solid #ddd;
-  background-color: #eef;
+  background-color: #eaeaea;
   padding: 0 .4em;
 }
 
@@ -208,8 +233,7 @@ a:hover {
 }
 
 .post code {
-  border: 1px solid #ddd;
-  background-color: #eef;
+  background-color: #eaeaea;
   padding: 0 .2em;
 }
 
